@@ -159,9 +159,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
     public void setFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container_home, fragment);
-       // fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack(null);
         //Get the new and old fragments to fade in and out
-        //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         Log.i(TAG, String.format("%s%s%s%s%s", " setFragment: ", " PDF ",
                 R.id.fragment_container_home, "has been replaced with.", fragment.toString()));
         fragmentTransaction.commit();
