@@ -46,7 +46,6 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
     private static final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String TAG = "HomeActivity";
     private static boolean readPDFPermissionsGranted;
-    private boolean isShown = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,12 +146,10 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
             case R.id.settings:
                 setFragment(settingsFragment);
                 Toast.makeText(this, "onOptionsItemSelected: Settings icon Clicked", Toast.LENGTH_SHORT).show();
-                isShown = true;
                 break;
             case R.id.speech:
                 setFragment(speechFragment);
                 Toast.makeText(this, "onOptionsItemSelected: Speech icon Clicked", Toast.LENGTH_SHORT).show();
-                isShown = true;
                 break;
         }
         return super.onOptionsItemSelected(item);
