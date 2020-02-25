@@ -145,11 +145,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
         switch (item.getItemId()) {
             case R.id.settings:
                 setFragment(settingsFragment);
-                Toast.makeText(this, "onOptionsItemSelected: Settings icon Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.speech:
                 setFragment(speechFragment);
-                Toast.makeText(this, "onOptionsItemSelected: Speech icon Clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
