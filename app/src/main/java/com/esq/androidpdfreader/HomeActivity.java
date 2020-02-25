@@ -26,7 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements FragmentReplaceListener{
 
     private static final int PICK_PDF_CODE = 1000;
     public static final int READ_PDF_CODE = 2000;
