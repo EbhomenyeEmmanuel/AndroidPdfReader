@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnRenderListener;
@@ -23,8 +24,9 @@ import butterknife.ButterKnife;
 
 public class ReadPdfActivity extends AppCompatActivity {
     private static final String TAG = "ReadPdfActivity";
-    ReadPdfFragment readPdfFragment ;
-    PDFView pdfView ;
+    static ReadPdfFragment readPdfFragment ;
+    static PDFView pdfView ;
+
     Intent mainIntent;
     HomeActivity homeActivity;
 
@@ -45,31 +47,65 @@ public class ReadPdfActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG,  " onCreate(): Method called due to Intent received" );
         setContentView(R.layout.activity_read_pdf);
         ButterKnife.bind(this);
-        pdfView = (PDFView) findViewById(R.id.pdf_viewer);
-        homeActivity = new HomeActivity();
-        mainIntent  = getIntent(); //Get intent from HomeActivity
-        readPdfFragment = new ReadPdfFragment();
+
+       // readPdfFromDevice();
+        this.onResume();
+        //When this activity is called for results this method would run
        // receiveHomeActivityResults();
+
+        if (savedInstanceState != null){
+            //mainIntent = (Intent) savedInstanceState.getBundle("seconds");
+        }else {
+            //Use this method if the activity just started
+            receiveHomeActivityResults();
+        }
+        //setFragment(readPdfFragment);
+    }
+
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+     super.onSaveInstanceState(savedInstanceState);
+       //savedInstanceState.putExtra("intent", this.mainIntent);
+        savedInstanceState.putChar("BundleChar", 'B');
+        //The value of wasRunning was set in the onStop method ->
+        // after the activity was recreated
     }
 
     /*
 
      */
+
+    //Send a result to homeActivity
     private void receiveHomeActivityResults() {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("pdfData", mainIntent);
-        setResult(ReadPdfActivity.RESULT_OK, resultIntent);
+        setResult(RESULT_OK, resultIntent);
+        //Calling finish makes mainIntent in the onCreate to be null
         finish();
         Log.i(TAG, "receiveHomeActivityResults(): setResult for intent received");
     }
 
+    //Initialize all variables
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: Variables initialized");
+        readPdfFragment = new ReadPdfFragment();
+        pdfView = (PDFView) readPdfFragment.getView();
+        // Use the pdfView view of the ReadFragment in this activity
+        // pdfView = ReadPdfFragment.pdfView;
+        homeActivity = new HomeActivity();
+        mainIntent  = getIntent(); //Get intent from HomeActivity
+    }
+
     //Method for reading pdf from device
     public void readPdfFromDevice(){
-        Log.i(TAG, "readPdfFromDevice(): Method is about to set up  PDF view");
-        //pdfView = readPdfFragment.pdfView;
-        readPdfFragment = new ReadPdfFragment();
+        Log.i(TAG, "readPdfFromDevice(): Method is about to set up PDF view");
+      //  Log.i(TAG, "readPdfFromDevice(): Bundle is ");
+       readPdfFragment = new ReadPdfFragment();
+       homeActivity = new HomeActivity();
         if (mainIntent != null) {
             String viewType = mainIntent.getStringExtra("ViewType");
             if (viewType != null && !TextUtils.isEmpty(viewType)) {
@@ -106,11 +142,14 @@ public class ReadPdfActivity extends AppCompatActivity {
                             .load();
                 }
             }
-            //Log.i(TAG, "readPdfFromDevice: Intent data is not null; replacing fragment");
-           // homeActivity.setFragment(readPdfFragment);
+            Log.i(TAG, "readPdfFromDevice: Intent data is not null; replacing fragment");
+
+           //homeActivity.setFragment(readPdfFragment);
+           // Log.i(TAG, "readPdfFromDevice: finish() called");
+           // finish();
+        }else{
+            Log.i(TAG, "readPdfFromDevice: Main Intent is null can't display PDF");
         }
     }
-
-    //TODO use replace fragment in HomeActivity. Change layout :no need for a new fragment container
 
 }
