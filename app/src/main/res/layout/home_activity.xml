@@ -11,16 +11,18 @@
 
     <FrameLayout
         android:id="@+id/fragment_container_home"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="390dp"
+        android:layout_height="634dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:background="#FFF"
         app:layout_constraintBottom_toBottomOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="@+id/coordinatorLayout"
+        app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="@+id/coordinatorLayout"
-        app:layout_constraintTop_toTopOf="@+id/coordinatorLayout" />
+        app:layout_constraintTop_toTopOf="@+id/coordinatorLayout"
+        app:layout_constraintVertical_bias="0.089" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
