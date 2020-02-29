@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
@@ -37,11 +38,16 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
     @BindView(R.id.fragment_container_home)
     FrameLayout frameLayout;
 
-    SpeechFragment speechFragment;
-    SettingsFragment settingsFragment;
-    ReadPdfFragment readPdfFragment;
-    ReadPdfActivity readPdfActivity;
-    HomeActivityFragment homeActivityFragment;
+   final SpeechFragment speechFragment = new SpeechFragment();
+   final SettingsFragment  settingsFragment = new SettingsFragment();
+    ReadPdfFragment readPdfFragment = new ReadPdfFragment();
+   ReadPdfActivity readPdfActivity = new ReadPdfActivity();
+   final HomeActivityFragment homeActivityFragment = new HomeActivityFragment();
+   final FragmentManager fragmentManager = getSupportFragmentManager();
+   //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+   Fragment active = homeActivityFragment;
+
     private static final String READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
     private static final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String TAG = "HomeActivity";
@@ -55,11 +61,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
         getReadPDFPermission();
         setUpBottomAppBar();
         setUpFab();
-        homeActivityFragment = new HomeActivityFragment();
-        readPdfActivity = new ReadPdfActivity();
-        speechFragment = new SpeechFragment();
         readPdfFragment = new ReadPdfFragment();
-        settingsFragment = new SettingsFragment();
+        fragmentManager.beginTransaction().add(R.id.fragment_container_home, speechFragment, "Speech").hide(speechFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.fragment_container_home, settingsFragment, "Settings").hide(settingsFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.fragment_container_home, homeActivityFragment, "Home").commit();
+
     }
 
     //Set up bottom bar
@@ -69,6 +75,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
         //Click event over Bottom bar navigation item
         bottomAppBar.setNavigationOnClickListener(v -> {
             setFragment(homeActivityFragment);
+            active = homeActivityFragment;
         });
     }
 
@@ -84,17 +91,25 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
                 intent.putExtra("FileUri", selectedPDF.toString());
                 //start activity silently
                 startActivityForResult(intent, READ_PDF_CODE);
+                //startActivity(intent);
                 Log.i(TAG, "onActivityResult: startActivityForResult() called");
             } else {
                 Toast.makeText(HomeActivity.this, "Allow all permissions to read PDF", Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == READ_PDF_CODE && resultCode == RESULT_OK && data != null) {
             Log.i(TAG, "onActivityResult: result gotten from intent, readPdfActivity.readPdfFromDevice() is called");
-            //Log.i(TAG, "onActivityResult: result gotten from intent, pdfView is " + readPdfActivity.pdfView.toString());
 
+            //ReadPdfActivity was destroyed so mainIntent is now null ... Set it to the intent in SetResult()
+            readPdfActivity.mainIntent = getIntent();
+            if(readPdfActivity.mainIntent != null){
+                Log.i(TAG,  "onActivityResult: MainIntent has been initialized" );
+            }else{
+                Log.i(TAG, "onActivityResult: MainIntent is null" );
+            }
             readPdfActivity.readPdfFromDevice();
-
             //Change fragment to pdfView fragment
+           // readPdfFragment = readPdfActivity.readPdfFragment;
+            //Log.i(TAG, "readPdfFromDevice: readPdfFragment is " + readPdfFragment);
             setFragment(readPdfFragment);
         }
 
@@ -145,9 +160,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
         switch (item.getItemId()) {
             case R.id.settings:
                 setFragment(settingsFragment);
+                active = settingsFragment;
                 break;
             case R.id.speech:
                 setFragment(speechFragment);
+                active = speechFragment;
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -155,14 +172,30 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
 
     //Change fragment based on what the user clicks
     public void setFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container_home, fragment);
-        fragmentTransaction.addToBackStack(null);
-        //Get the new and old fragments to fade in and out
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        Log.i(TAG, String.format("%s%s%s%s%s", " setFragment: ", " PDF ",
-                R.id.fragment_container_home, "has been replaced with.", fragment.toString()));
-        fragmentTransaction.commit();
+
+        if(fragmentManager != null){
+            Log.i(TAG, "FragmentManager is not null");
+        }else{
+            Log.i(TAG, "FragmentManager is null");
+        }
+        try {
+            //FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            //fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().hide(active).show(fragment).commit();
+            //fragmentManager.executePendingTransactions();
+            if(fragment.isAdded()){
+                Log.i(TAG, "Fragment can be Added");
+
+            }else{
+                Log.i(TAG, "Fragment can't be Added");
+            }
+            Log.i(TAG, String.format("%s%s%s%s%s", " setFragment: ", " PDF ",
+                    R.id.fragment_container_home, "has been replaced with.", fragment.toString()));
+        }catch(Exception e){
+            Log.i(TAG, "Fragment can't be replaced");
+            e.printStackTrace();
+        }
+
     }
 
 }
