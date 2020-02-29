@@ -52,7 +52,7 @@ public class ReadPdfActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
        // readPdfFromDevice();
-        this.onResume();
+        //this.onResume();
         //When this activity is called for results this method would run
        // receiveHomeActivityResults();
 
