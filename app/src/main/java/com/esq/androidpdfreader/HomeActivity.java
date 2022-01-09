@@ -12,15 +12,21 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnRenderListener;
+import com.github.barteksc.pdfviewer.listener.OnTapListener;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -45,9 +51,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
    final HomeActivityFragment homeActivityFragment = new HomeActivityFragment();
    final FragmentManager fragmentManager = getSupportFragmentManager();
    //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
+   PDFView pdfView;
    Fragment active = homeActivityFragment;
 
+    final String VIEW_TYPE = "ViewType";
+    final String FILE_URI = "FileUri";
     private static final String READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
     private static final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String TAG = "HomeActivity";
@@ -86,31 +94,31 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
             if (readPDFPermissionsGranted) {
                 Log.i(TAG, "onActivityResult: Permissions has been granted");
                 Uri selectedPDF = data.getData();
-                Intent intent = new Intent(HomeActivity.this, ReadPdfActivity.class);
-                intent.putExtra("ViewType", "storage");
-                intent.putExtra("FileUri", selectedPDF.toString());
+                Intent intent = new Intent(this, ReadPdfActivity.class);
+                intent.putExtra(VIEW_TYPE, "storage");
+                intent.putExtra(FILE_URI, selectedPDF.toString());
                 //start activity silently
                 startActivityForResult(intent, READ_PDF_CODE);
                 //startActivity(intent);
                 Log.i(TAG, "onActivityResult: startActivityForResult() called");
             } else {
                 Toast.makeText(HomeActivity.this, "Allow all permissions to read PDF", Toast.LENGTH_LONG).show();
+                String[] permissions = {READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE};
+                ActivityCompat.requestPermissions(HomeActivity.this, permissions, PICK_PDF_CODE);
             }
-        } else if (requestCode == READ_PDF_CODE && resultCode == RESULT_OK && data != null) {
-            Log.i(TAG, "onActivityResult: result gotten from intent, readPdfActivity.readPdfFromDevice() is called");
+        } else if (requestCode == READ_PDF_CODE && resultCode == RESULT_OK && data != null ) {
+            Log.i(TAG, "onActivityResult: result gotten from ReadPdfActivity");
 
             //ReadPdfActivity was destroyed so mainIntent is now null ... Set it to the intent in SetResult()
-            readPdfActivity.mainIntent = getIntent();
-            if(readPdfActivity.mainIntent != null){
-                Log.i(TAG,  "onActivityResult: MainIntent has been initialized" );
-            }else{
-                Log.i(TAG, "onActivityResult: MainIntent is null" );
-            }
-            readPdfActivity.readPdfFromDevice();
+            Log.i(TAG, data == null ? "Intent: mainIntent is null" : "Intent: mainIntent is " + data);
+            String viewType = data.getStringExtra(VIEW_TYPE);
+            Log.i(TAG, viewType==null? "onActivityResult: viewType is null" : "receiveHomeActivityResults(): viewType is -> " + viewType);
+            readPdfActivity.initializeVariables(data);
+          //  readPdfFragment.readPdfFromDevice();
+
             //Change fragment to pdfView fragment
-           // readPdfFragment = readPdfActivity.readPdfFragment;
-            //Log.i(TAG, "readPdfFromDevice: readPdfFragment is " + readPdfFragment);
             setFragment(readPdfFragment);
+            //readPdfActivity.initializeVariables(data);
         }
 
     }
@@ -172,30 +180,23 @@ public class HomeActivity extends AppCompatActivity implements FragmentReplaceLi
 
     //Change fragment based on what the user clicks
     public void setFragment(Fragment fragment) {
-
-        if(fragmentManager != null){
-            Log.i(TAG, "FragmentManager is not null");
-        }else{
-            Log.i(TAG, "FragmentManager is null");
-        }
         try {
             //FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             //fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().hide(active).show(fragment).commit();
-            //fragmentManager.executePendingTransactions();
+            //fragmentTransaction.replace(R.id.fragment_container_home, fragment).commit();
             if(fragment.isAdded()){
                 Log.i(TAG, "Fragment can be Added");
-
+                Log.i(TAG, String.format("%s%s%s%s%s", " setFragment: ", " PDF ",
+                        R.id.fragment_container_home, "has been replaced with.", fragment.toString()));
             }else{
                 Log.i(TAG, "Fragment can't be Added");
             }
-            Log.i(TAG, String.format("%s%s%s%s%s", " setFragment: ", " PDF ",
-                    R.id.fragment_container_home, "has been replaced with.", fragment.toString()));
+
         }catch(Exception e){
             Log.i(TAG, "Fragment can't be replaced");
             e.printStackTrace();
         }
-
     }
 
 }
