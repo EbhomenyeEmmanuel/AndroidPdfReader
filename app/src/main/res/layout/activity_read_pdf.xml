@@ -7,9 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".ReadPdfActivity">
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/fragment_read_pdf" />
+    <!-- Setting a fragment view makes PDFView not to be null-->
+    <fragment
+        android:layout_margin="10dp"
+        class="com.esq.androidpdfreader.ReadPdfFragment"
+        android:id="@+id/detail_frag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
