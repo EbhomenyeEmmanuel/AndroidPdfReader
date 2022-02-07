@@ -3,15 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/speech"
-        android:title="@string/speech"
-        android:icon="@drawable/ic_speak"
-        app:showAsAction="always"
-        />
+        android:id="@+id/homeFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home"
+        app:showAsAction="always" />
+
     <item
-        android:id="@+id/settings"
+        android:id="@+id/speechFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_speak"
+        android:title="@string/speech"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings"
         android:title="@string/settings"
-    android:icon="@drawable/ic_settings"
-        app:showAsAction="ifRoom"
-    />
+        app:showAsAction="ifRoom" />
 </menu>

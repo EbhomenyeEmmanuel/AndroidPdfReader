@@ -1,12 +1,10 @@
 <resources>
     <string name="app_name">Pdf2Audio</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings">Settings</string>
     <string name="speech">Speech</string>
-    <string name="home">You haven\'t opened a pdf yet.</string>
+    <string name="home">Home</string>
+    <string name="you_have_not_opened_a_pdf_yet">You haven\'t opened a pdf yet.</string>
     <string name="title_activity_read_pdf">ReadPdfActivity</string>
-    <string name="app_name2">PdfToAudio</string>
     <string name="app_desc">Convert PDF document to audio easily.</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.esq.androidpdfreader;
+package com.esq.androidpdfreader.ui;
 
 
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.esq.androidpdfreader.R;
 
 
 /**

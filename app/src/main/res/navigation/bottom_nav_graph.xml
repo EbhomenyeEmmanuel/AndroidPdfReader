@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_nav_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.esq.androidpdfreader.ui.HomeFragment"
+        android:label="fragment_read_pdf"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/speechFragment"
+        android:name="com.esq.androidpdfreader.ui.SpeechFragment"
+        android:label="fragment_speech"
+        tools:layout="@layout/fragment_speech" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.esq.androidpdfreader.ui.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>
